@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>Site Customization</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+        <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+        <link href="styles/page.css" rel="stylesheet">
+    </head>
+    <body class="container-fluid">
+        <div class="body-liner">
+            <!-- Navigation Menu -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
+                <a class="navbar-brand" href="#"><i class="fa fa-power-off mr-1"></i>Menu</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav mr-auto" data-bind="foreach: Navigation.Items">
+                        <li data-bind="attr: {'class': ClassList()}">
+                            <a class="nav-link" href="#" data-bind="attr: {'data-tab': TabName()}"><i data-bind="attr: {'class': (Icon().length > 0 ? 'fa mr-1 ' + Icon() : '')}"></i><span data-bind="text: Text"></span></a>
+                        </li>
+                    </ul>
+                    <span class="navbar-text navbar-right">Current user <a href="#" class="navbar-link" data-toggle="modal" data-target="#user-card" data-bind="text: Tabs.User.Name"></a></span>
+                </div>
+            </nav>
+            <!-- End of Navigation Menu -->
+            <div class="row">
+                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                    <h1 class="h1">Customize the Site</h1>
+                </div>
+            </div>
+            <!-- The data-bind="with" syntax here tells Knockout to reference the "Tabs" property of the ApplicationViewModel for this set of HTML -->
+            <div class="row" id="dynamic-contents" data-bind="with: Tabs">
+                <div class="col-xl-5 col-lg-8 col-md-8 col-sm-12">
+                    <form class="user-form" id="userForm">
+                        <div class="card bg-light" data-bind="attr: {'style': ('background-color: ' + Preferences.FavoriteColor() + '!important')}">
+                            <div class="card-body">
+                                <div class="row">
+                                    <!-- The ko if statement here controls which form is displayed based on the link the user clicks.  More can be added as more links are created -->
+                                    <!-- ko if: (CurrentTab() == 'user') -->
+                                    <div class="col-xl-6 col-lg-6 col-md-7 col-sm-7">
+                                        <div class="row">
+                                            <div class="col">
+                                                <h5 class="card-title">User Information</h5>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-group col">
+                                                <input type="checkbox" class="form-check-inline" name="disclaimerCheck" id="disclaimerCheck" data-bind="checked: User.DisclaimerChecked" />
+                                                <label for="disclaimerCheck" class="form-check-label">By clicking this you agree to things</label>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-group col">
+                                                <label for="name">Name</label>
+                                                <div class="input-group mb-2">
+                                                    <div class="input-group-prepend">
+                                                        <div class="input-group-text"><i class="fa fa-address-card"></i></div>
+                                                    </div>
+                                                    <input type="text" class="form-control" id="name" placeholder="John" data-val="true" required data-bind="value: User.Name">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- /ko -->
+                                    <!-- ko if: (CurrentTab() == 'preferences') -->
+                                    <div class="col-xl-6 col-lg-6 col-md-7 col-sm-7">
+                                        <div class="row">
+                                            <div class="col">
+                                                <h5 class="card-title">Preferences</h5>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-group col">
+                                                <label for="favoriteColor">Favorite Color</label>
+                                                <div class="input-group mb-2">
+                                                    <div class="input-group-prepend">
+                                                        <div class="input-group-text"><i class="fa fa-paint-brush"></i></div>
+                                                    </div>
+                                                    <select name="favoriteColor" class="custom-select" id="favoriteColor" data-val="true" required data-bind="value: Preferences.FavoriteColor, options: colorOptions">
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- /ko -->
+                                    <div class="col-xl-5 col-lg-5 col-md-3 col-sm-3 messages pr-0">
+                                        <!-- Placeholder for where Bootstrap JavaScript driven messages will appear -->
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 button-wrapper">
+                                        <button name="Submit_Button" class="btn btn-primary" id="Submit_Button" data-bind="attr: { 'class': (!User.DisclaimerChecked() ? 'disabled' : '')}">Submit</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- Model window that shows read-only detailed user info -->
+            <div class="modal fade" id="user-card" tabindex="-1" role="dialog" aria-labelledby="userCardTitle" aria-hidden="true" data-bind="with: Tabs">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="userCardTitle">Information for <span data-bind="text: User.Name"></span></h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col">
+                                        Detailed User Information
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <h5>Details</h5>
+                                        <ul class="list-group">
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">Name: <mark class="ml-1" data-bind="text: User.Name"></mark></li>
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">Browser: <mark class="ml-1" data-bind="text: User.Browser"></mark></li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-6">
+                                        <h5>Preferences</h5>
+                                        <ul class="list-group">
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">Favorite Color: <mark class="ml-1" data-bind="text: Preferences.FavoriteColor"></mark></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End modal window -->
+        </div>
+        <!-- Used for the loading indicator when the page first loads -->
+        <div class="modal-wrapper"></div>
+        <div class="load-wrapper">
+            <div class="liner">
+                <div class="loader"></div>
+                <span class="text-secondary">Please wait while your settings are loaded...</span>
+            </div>
+        </div>
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-min.js"></script>
+        <script type="text/javascript" src="scripts/app.js"></script>
+        <script type="text/javascript">
+            // The following JavaScript libraries are in use to make this page work:
+            // - jQuery 3.3.1
+            //  - Makes working with the DOM easier and provides convenience methods.  Required by other frameworks to function.
+            // - Bootstrap 4.1.3
+            //  - Written by Twitter, a JS helper library and set of CSS / styles that provide responsive classes, and a general theme for web-pages to "bootstrap" or simplify creating styles for layout that work across multiple browsers and screen sizes
+            // - Knockout 3.4.2
+            //  - Makes manipulating the HTML in the page easier by not having to find things by ID and change their contents.  Instead, it is a two-way binding where user-input in a form field affects the JavaScript data, and changes to the JavaScript data are reflected in the HTML without having to write custom JS code.
+
+            
+            // The app.js file declares a "Site" module to control scope of variables.  Here, we invoke the Setup method of the Site "module".  Debugging log messages can be turned on or off by setting the debug flag.
+            Site.Setup({ siteStorageKey: "Site_State", debug: true });
+
+            // The jQuery document.ready function executes after the DOM / HTML has been loaded by the browser to make sure that all of the HTML elements are present so we don't accidentally try and reference something on the page that isn't there yet.
+            $(function() {
+                // The "Site" module has a sub-module called "Navigation" which has a method named BuildNav.  This method takes an array of JavaScript objects for an argument.  You can add new items to the top navigation by adding a new item to the array with the desired values.
+                Site.Navigation.BuildNav([
+                    {
+                        Title: "Home Page",
+                        Text: "Home",
+                        TabName: "user",
+                        Classes: ["nav-item"],
+                        Icon: "fa-home"
+                    },
+                    {
+                        Title: "Preferences",
+                        Text: "Preferences",
+                        TabName: "preferences",
+                        Classes: ["nav-item"],
+                        Icon: "fa-gears"
+                    }
+                ]);
+                
+                // The event handler that executes when the disclaimer checkbox is clicked.
+                $(document).on("click", "#disclaimerCheck", function(e) {
+                    var isChecked = $(e.currentTarget).prop('checked');
+                    Site.BoxChecked(isChecked);
+                });
+                
+                // The event handler that executes when any navigation link is clicked
+                $(document).on("click", ".nav-link", function(e) {
+                    var selectedTab = $(e.currentTarget).data("tab");
+                    Site.ViewModel.Tabs.CurrentTab(selectedTab);
+                    Site.Navigation.SetCurrent(selectedTab);
+                    return false; // the return false makes sure a # doesn't get added to the URL
+                });
+                
+                // The event handler that executes when the submit button is clicked
+                $(document).on("click", "#Submit_Button", function(e) {
+                    if ($(e.currentTarget).hasClass("disabled")) {
+                        var alert = "<div class='alert alert-warning alert-dismissable fade show' role='alert'><strong>Please accept the disclaimer to continue.<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button></strong></div>";
+                        $(".messages").append(alert);
+                        e.preventDefault();
+                        return false;
+                    } else {
+                        Site.Storage.SetItem("Name", Site.ViewModel.Tabs.User.Name());
+                        Site.Storage.SetItem("FavoriteColor", Site.ViewModel.Tabs.Preferences.FavoriteColor());
+                    }
+                });
+                
+                // The "Site" module defines a "Forms" sub-module which has a method called LoadFromStorage.  This method reads the data stored in the HTML5 local storage (if any) and loads it into the JavaScript variables to be used by the web-page.
+                Site.Forms.LoadFromStorage();
+                
+                // Knockout JS syntax for binding the Javascript view model (ApplicationViewModel in app.js) to the DOM node with the CSS class 'body-liner', found near the top of the HTML after the opening BODY tag.  Any elements that need to get bound to the data need to appear within the 'body-liner' div.
+                ko.applyBindings(Site.ViewModel, $(".body-liner")[0]);
+            });
+        </script>
+    </body>
+</html>
